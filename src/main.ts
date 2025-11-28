@@ -4,8 +4,12 @@ import { config } from "../utils/config";
 import { paymentRouter } from "../utils/paystack";
 import conn from "../utils/conn";
 import Booking, { IBooking } from "../models/bookings";
-// ============ CONFIG ============
 
+// todos
+// 1. add validation to booking input
+// 2. add "is_active" field to booking model
+// 3. add pagination to get bookings endpoint
+// 4. add logic and route to end session / deactivate booking
 const app = express();
 app.use(express.json());
 
