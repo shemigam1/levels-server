@@ -1,16 +1,18 @@
 // import express, { Request, Response } from "express";
 import express, { Request, Response, NextFunction } from "express";
-import { config } from "../utils/config";
-import { paymentRouter } from "../utils/paystack";
-import conn from "../utils/conn";
-import Booking, { IBooking } from "../models/bookings";
-
+import { config } from "./utils/config";
+import { paymentRouter } from "./routes/paystack";
+import conn from "./utils/conn";
+import Booking from "./models/bookings";
+import cors from "cors";
+import { IBooking } from "./utils/types";
 // todos
 // 1. add validation to booking input
 // 2. add "is_active" field to booking model
 // 3. add pagination to get bookings endpoint
 // 4. add logic and route to end session / deactivate booking
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/health", (req: Request, res: Response) => {
@@ -23,10 +25,9 @@ app.post(
     const input: IBooking = {
       name: req.body.name,
       email: req.body.email,
-      start_time: req.body.start_time,
-      end_time: req.body.end_time,
       date: req.body.date,
       type_of_booking: req.body.type_of_booking,
+      is_active: false,
     };
     const existingBookings = await Booking.find({ date: input.date });
     if (existingBookings.length >= 50) {
@@ -75,6 +76,7 @@ app.post("/", async (req: Request, res: Response) => {
 });
 
 app.use("/payments", paymentRouter);
+app.use("admin");
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response) => {
@@ -84,6 +86,6 @@ app.use((err: Error, req: Request, res: Response) => {
 
 // Start server
 app.listen(config.PORT, async () => {
-  //   await conn;
+  await conn;
   console.log(`http://localhost:${config.PORT}`);
 });
