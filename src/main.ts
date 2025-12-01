@@ -6,11 +6,8 @@ import conn from "./utils/conn";
 import Booking from "./models/bookings";
 import cors from "cors";
 import { IBooking } from "./utils/types";
-// todos
-// 1. add validation to booking input
-// 2. add "is_active" field to booking model
-// 3. add pagination to get bookings endpoint
-// 4. add logic and route to end session / deactivate booking
+import adminRouter from "./routes/admin";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -22,27 +19,31 @@ app.get("/health", (req: Request, res: Response) => {
 app.post(
   "/booking",
   async (req: Request, res: Response, next: NextFunction) => {
-    const input: IBooking = {
-      name: req.body.name,
-      email: req.body.email,
-      date: req.body.date,
-      type_of_booking: req.body.type_of_booking,
-      is_active: false,
-    };
-    const existingBookings = await Booking.find({ date: input.date });
-    if (existingBookings.length >= 50) {
-      return res
-        .status(500)
-        .json({ success: false, error: "the hub is fully booked" });
-    }
-    const booking = await Booking.create(input);
-
-    if (!booking) {
-      return res
-        .status(500)
-        .json({ success: false, error: "something went wrong" });
-    }
     try {
+      const input: IBooking = {
+        name: req.body.name,
+        email: req.body.email,
+        date: req.body.date,
+        type_of_booking: req.body.type_of_booking,
+        is_active: false,
+      };
+
+      const existingBookings = await Booking.find({ date: input.date });
+      if (existingBookings.length >= 50) {
+        return res
+          .status(400)
+          .json({ success: false, error: "the hub is fully booked" });
+      }
+
+      const booking = await Booking.create(input);
+
+      if (!booking) {
+        return res
+          .status(500)
+          .json({ success: false, error: "something went wrong" });
+      }
+
+      return res.status(201).json({ success: true, data: booking });
     } catch (error) {
       return res
         .status(500)
@@ -64,7 +65,7 @@ app.post("/", async (req: Request, res: Response) => {
 
     if (bookings.length >= 50) {
       return res
-        .status(500)
+        .status(400)
         .json({ success: false, error: "the hub is fully booked" });
     }
     return res.status(200).json({ success: true, data: bookings });
@@ -76,10 +77,9 @@ app.post("/", async (req: Request, res: Response) => {
 });
 
 app.use("/payments", paymentRouter);
-app.use("admin");
+app.use("/admin", adminRouter); //
 
-// Error handling middleware
-app.use((err: Error, req: Request, res: Response) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error("Unhandled error:", err);
   res.status(500).json({ success: false, error: "Internal server error" });
 });
