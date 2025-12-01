@@ -19,5 +19,7 @@ const BookingSchema: Schema = new Schema<IBooking>(
   }
 );
 
+BookingSchema.index({ date: 1 });
+
 const Booking = mongoose.model<IBooking>("Booking", BookingSchema);
 export default Booking;

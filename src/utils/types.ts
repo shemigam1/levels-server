@@ -34,5 +34,5 @@ export interface IBooking {
   email: string;
   date: string;
   type_of_booking: string;
-  is_active: boolean;
+  // is_active: boolean;
 }

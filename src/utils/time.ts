@@ -1,29 +1,41 @@
-/**
- * Convert a timestamp (number from Date.now() or a Date object) into a small
- * object with day, month, year and hour as strings.
- *
- * - day: 2-digit day ("01".."31")
- * - month: 2-digit month ("01".."12")
- * - year: 4-digit year ("2025")
- * - hour: 24-hour time with minutes ("HH:mm")
- */
-export function formatTimestamp(input: number | Date): {
-  day: string;
-  month: string;
-  year: string;
-  hour: string;
-} {
-  const d = typeof input === "number" ? new Date(input) : input;
+import { parse } from "path";
 
-  const pad2 = (n: number) => String(n).padStart(2, "0");
+export function parseBookingDate(dateInput: string): Date | null {
+  try {
+    // Handle ISO strings or other formats
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) {
+      return null;
+    }
 
-  const day = pad2(d.getDate());
-  const month = pad2(d.getMonth() + 1); // months are 0-based in JS
-  const year = String(d.getFullYear());
-  const hour = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-
-  return { day, month, year, hour };
+    // Normalize to start of day in local timezone
+    date.setHours(0, 0, 0, 0);
+    return date;
+  } catch (error) {
+    return null;
+  }
 }
 
-// Small convenience default export
-export default formatTimestamp;
+export function formatDateString(input: string): string {
+  const date = parseBookingDate(input);
+  if (!date) {
+    throw new Error("Invalid date format");
+  }
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function getToday(): Date {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
+}
+
+export function isDateInPast(date: string): boolean {
+  const dateString = parseBookingDate(date);
+  if (!dateString) return true;
+  const today = getToday();
+  return dateString < today;
+}
