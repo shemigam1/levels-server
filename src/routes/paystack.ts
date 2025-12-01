@@ -1,6 +1,7 @@
 import { Router } from "express";
 import axios from "axios";
-import { config } from "./config";
+// import { config } from "..utils/config";
+import { config } from "../utils/config";
 
 const { PAYSTACK_SECRET_KEY, PAYSTACK_URL } = config;
 
