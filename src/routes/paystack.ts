@@ -15,14 +15,14 @@ function calculateAmountInKobo(nairaAmount: number): number {
 paymentRouter.post("/init", async (req, res) => {
   try {
     const { email, amount } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
 
-    // const amountInKobo = calculateAmountInKobo(3000);
-    // if (calculateAmountInKobo(amount) != amountInKobo) {
-    //   return res
-    //     .status(400)
-    //     .json({ error: "Invalid amount. Amount must be 30 NGN." });
-    // }
+    const amountInKobo = calculateAmountInKobo(1000);
+    if (calculateAmountInKobo(amount) != amountInKobo) {
+      return res
+        .status(400)
+        .json({ error: "Invalid amount. Amount must be 1000 NGN." });
+    }
     const options = {
       headers: {
         Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
@@ -65,7 +65,7 @@ paymentRouter.post("/verify", async (req, res) => {
     };
 
     const url = `${PAYSTACK_URL}/transaction/verify/${reference}`;
-    console.log(PAYSTACK_SECRET_KEY);
+    // console.log(PAYSTACK_SECRET_KEY);
 
     const response = await axios.get(url, {
       headers: options.headers,
