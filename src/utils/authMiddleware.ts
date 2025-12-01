@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ResultFunction, verifyJwt } from "../helpers/utils";
-import { ReturnStatus } from "../types/generic";
+import { ResultFunction, verifyJwt } from "./utils";
 import User from "../models/user";
 import { JsonWebTokenError, JwtPayload } from "jsonwebtoken";
 
@@ -11,13 +10,7 @@ const authMiddleWare = async (
 ) => {
   // extract auth header
   const authorization = req.headers.authorization;
-  const response = ResultFunction(
-    false,
-    "invalid or missing token",
-    401,
-    ReturnStatus.INVALID_TOKEN,
-    null
-  );
+  const response = ResultFunction(false, "invalid or missing token", 401, null);
 
   if (!authorization) {
     return res.status(response.code).json(response);

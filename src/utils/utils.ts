@@ -4,7 +4,7 @@ import { config } from "./config";
 export const signJwt = (user: any) => {
   try {
     const token = jwt.sign({ _id: user._id.toString() }, config.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
     return token;
   } catch (error) {

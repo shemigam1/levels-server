@@ -3,11 +3,13 @@ import User from "../models/user";
 import { comparePassword } from "../utils/hash";
 import { ResultFunction, signJwt } from "../utils/utils";
 import { LoginData } from "../utils/types";
+import authMiddleWare from "../utils/authMiddleware";
 
 const adminRouter = Router();
 
-// adminRouter.post("/activate-booking");
-// adminRouter.post("/deactivate-booking");
+adminRouter.post("/activate-booking", authMiddleWare, async (req, res) => {});
+
+adminRouter.post("/deactivate-booking", authMiddleWare, async (req, res) => {});
 
 adminRouter.post("/login", async (req, res) => {
   try {
@@ -20,7 +22,7 @@ adminRouter.post("/login", async (req, res) => {
     if (user) {
       // console.log(user.password.length);
 
-      const passwordMatch = await comparePassword(password, user.password);
+      const passwordMatch = await comparePassword(user.password, password);
       if (!passwordMatch) {
         const response = ResultFunction(
           false,
