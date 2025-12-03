@@ -32,7 +32,11 @@ export interface ISignup {
 export interface IBooking {
   name: string;
   email: string;
-  date: string;
+  date?: string;
+  month?: string;
+  booking_type: string;
+  booking_scope?: "daily" | "monthly";
+  slots?: number;
   type_of_booking: string;
   // is_active: boolean;
 }
