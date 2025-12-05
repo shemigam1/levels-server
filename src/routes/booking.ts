@@ -3,7 +3,7 @@ import { IBooking } from "../utils/types";
 import Booking from "../models/bookings";
 import { formatDateString, isDateInPast } from "../utils/time";
 import { error } from "console";
-import { getPlanDetails } from "../utils/plan";
+//import { getPlanDetails } from "../utils/plan";
 
 const bookingRouter = Router();
 
@@ -16,8 +16,8 @@ if(!booking_plan){
 }
 
   try {
-    const planDetails = getPlanDetails(booking_plan);
-    const planSlots = planDetails.slots;
+    //const planDetails = getPlanDetails(booking_plan);
+    //const planSlots = planDetails.slots;
     const input: IBooking = {
       name: req.body.name,
       email: req.body.email,
@@ -49,9 +49,9 @@ if(!booking_plan){
 
     const usedSlots = existing.length ? existing[0].usedSlots : 0;
     const totalCapacity = 50;
-    if (usedSlots + planSlots > totalCapacity) {
-      return res.status(400).json({ success: false, error: "Not enough slots left for this day" });
-    }
+    //if (usedSlots + planSlots > totalCapacity) {
+      //return res.status(400).json({ success: false, error: "Not enough slots left for this day" });
+    //}
     //const existingBookings = await Booking.find({ date: dateString });
     //const availableSlots = 50 - existingBookings.length;
     //if (availableSlots <= 0) {
@@ -67,7 +67,7 @@ if(!booking_plan){
       date: dateString,
       type_of_booking,
       booking_scope: booking_plan,
-      slots: planSlots
+      //slots: planSlots
     });
     if (!newBooking) {
       return res
@@ -83,6 +83,7 @@ if(!booking_plan){
   }
 });
 
+/** 
 bookingRouter.get("/today", async (req: Request, res: Response) => {
   try {
     // const date = req.body.date;
@@ -109,7 +110,9 @@ bookingRouter.get("/today", async (req: Request, res: Response) => {
       .json({ success: false, error: "something went wrong" });
   }
 });
+//*/
 
+/** 
 bookingRouter.post("/weekly", async (req: Request, res: Response) => {
   try {
     const input: IBooking = {
@@ -180,8 +183,9 @@ bookingRouter.post("/weekly", async (req: Request, res: Response) => {
       .json({ success: false, error: "something went wrong" });
   }
 });
+//*/
 
-
+/** 
 bookingRouter.post("/monthly", async (req: Request, res: Response) => {
   try {
   const input: IBooking = {
@@ -258,10 +262,13 @@ if (!booking) {
       .json({ success: false, error: "something went wrong" });
   }
 });
+//*/
 
 //All Daily Bookings
+/** 
 bookingRouter.get("/", async (req: Request, res: Response) => {
   try {
+    const date = formatDateString(new Date().toISOString());
     const bookings = await Booking.find({ booking_scope: "daily" }).sort({
       date: 1,
     });
@@ -277,7 +284,9 @@ bookingRouter.get("/", async (req: Request, res: Response) => {
     });
   }
 });
+//*/
 
+/** 
 bookingRouter.get("/weekly", async (req: Request, res: Response) => {
   try {
     const bookings = await Booking.find({
@@ -295,8 +304,9 @@ bookingRouter.get("/weekly", async (req: Request, res: Response) => {
     });
   }
 });
+*/
 
-
+/** 
 bookingRouter.get("/monthly", async (req: Request, res: Response) => {
   try {
     const bookings = await Booking.find({ booking_scope: "month" });
@@ -310,5 +320,6 @@ bookingRouter.get("/monthly", async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: "Something went wrong" });
   }
 });
+*/
 
 export default bookingRouter;
