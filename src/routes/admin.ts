@@ -53,6 +53,16 @@ adminRouter.post("/login", async (req, res) => {
       const response = ResultFunction(true, "login successful", 200, data);
       return res.status(response.code).json(response);
     }
+    if (!user) {
+        const response = ResultFunction(
+            false,
+            "invalid email or password",
+            400,
+            null
+        );
+        return res.status(response.code).json(response);
+    }
+
   } catch (error) {
     const response = ResultFunction(false, "something went wrong", 500, null);
     return res.status(response.code).json(response);

@@ -33,9 +33,10 @@ export function getToday(): Date {
   return today;
 }
 
-export function isDateInPast(date: string): boolean {
-  const dateString = parseBookingDate(date);
-  if (!dateString) return true;
-  const today = getToday();
-  return dateString < today;
-}
+// not needed anymore thanks to Zod validation
+//   export function isDateInPast(date: string): boolean {
+//   const dateString = parseBookingDate(date);
+//   if (!dateString) return true;
+//   const today = getToday();
+//   return dateString < today;
+// }

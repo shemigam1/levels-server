@@ -6,7 +6,7 @@ const BookingSchema: Schema = new Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true, lowercase: true },
     date: { type: String, required: true, trim: true },
-    //type_of_booking: { type: String, required: true, trim: true }, // Only for day bookings
+    type_of_booking: { type: String, required: true, trim: true }, // Only for day bookings
     // WEEKLY booking (YYYY-WW)  ← NEW
     // week: { type: String, trim: true },
     // month: { type: String, trim: true },     // Only for month bookings
