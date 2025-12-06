@@ -2,88 +2,98 @@ import { Router, Request, Response } from "express";
 import { IBooking } from "../utils/types";
 import Booking from "../models/bookings";
 import { formatDateString, isDateInPast } from "../utils/time";
-import { error } from "console";
+// import { error } from "console";
 //import { getPlanDetails } from "../utils/plan";
 
 const bookingRouter = Router();
 
 //Daily Booking
+//take in, name email, date, booking_type and store in our database
 bookingRouter.post("/", async (req: Request, res: Response) => {
-    const booking_plan = req.body.booking_plan || "daily";
+    // const booking_plan = req.body.booking_plan || "daily";
 
-    if (!booking_plan) {
-        return res
-            .status(400)
-            .json({ success: false, error: "booking_plan is required" });
-    }
+    // if (!booking_plan) {
+    //     return res
+    //         .status(400)
+    //         .json({ success: false, error: "booking_plan is required" });
+    // }
 
-  try {
-    const planDetails = getPlanDetails(booking_plan);
-    const planSlots = planDetails.slots;
-    const input: IBooking = {
-      name: req.body.name,
-      email: req.body.email,
-      date: req.body.date,
-      type_of_booking: req.body.type_of_booking,
-      booking_type: req.body.booking_type,
-      slots: req.body.slots,
-      //   is_active: false,
-    };
-    const { name, email, date, type_of_booking, slots } = input;
-    if (!name || !email || !date || !type_of_booking) {
-      return res.status(400).json({
-        success: false,
-        error: "Missing required fields",
-      });
-    }
-    if (isDateInPast(date)) {
-      return res
-        .status(400)
-        .json({ success: false, error: "date cannot be in the past" });
-    }
+    try {
+        // const planDetails = getPlanDetails(booking_plan);
+        // const planSlots = planDetails.slots;
+        const input: IBooking = {
+            name: req.body.name,
+            email: req.body.email,
+            date: req.body.date,
+            booking_type: req.body.booking_type || "Daily",
+            // type_of_booking: req.body.type_of_booking,
+            // slots: req.body.slots,
+            //   is_active: false,
+        };
+        const { name, email, date } = input;
+        if (!name || !email || !date) {
+            return res.status(400).json({
+                success: false,
+                error: "Missing required fields",
+            });
+        }
+        if (isDateInPast(date)) {
+            return res
+                .status(400)
+                .json({ success: false, error: "date cannot be in the past" });
+        }
 
         const dateString = formatDateString(date);
 
         const existing = await Booking.aggregate([
-            { $match: { date: dateString, booking_scope: "daily" } },
-            { $group: { _id: null, usedSlots: { $sum: "$slots" } } },
+            { $match: { date: dateString } },
+            { $group: { _id: null } },
         ]);
 
-    const usedSlots = existing.length ? existing[0].usedSlots : 0;
-    const totalCapacity = 50;
-    if (usedSlots + planSlots > totalCapacity) {
-      return res.status(400).json({ success: false, error: "Not enough slots left for this day" });
-    }
-    //const existingBookings = await Booking.find({ date: dateString });
-    //const availableSlots = 50 - existingBookings.length;
-    //if (availableSlots <= 0) {
-      //return res
+        const usedSlots = existing.length ? existing.length : 0;
+        const totalCapacity = 50;
+        if (usedSlots > totalCapacity) {
+            return res.status(400).json({
+                success: false,
+                error: "Not enough slots left for this day",
+            });
+        }
+        //const existingBookings = await Booking.find({ date: dateString });
+        //const availableSlots = 50 - existingBookings.length;
+        //if (availableSlots <= 0) {
+        //return res
         //.status(401)
         //.json({ success: false, error: "the hub is fully booked" });
         //}
 
-        //const booking = await Booking.create(input);
+        // const newBooking = await Booking.create(input);
 
-    const newBooking = await Booking.create({
-      name, email,
-      date: dateString,
-      type_of_booking,
-      booking_scope: booking_plan,
-      slots: planSlots
-    });
-    if (!newBooking) {
-      return res
-        .status(500)
-        .json({ success: false, error: "something went wrong" });
-    }
+        const newBooking = await Booking.create({
+            name,
+            email,
+            date: dateString,
+            // type_of_booking,
+            // booking_scope: booking_plan,
+            // slots: 1,
+        });
+        if (!newBooking) {
+            return res
+                .status(500)
+                .json({ success: false, error: "something went wrong" });
+        }
 
         return res.status(201).json({ success: true, data: newBooking });
     } catch (error) {
         return res
             .status(500)
-            .json({ success: false, error: "something went wrong2" });
+            .json({
+                success: false,
+                error: error instanceof Error ? error.message : error,
+            });
     }
 });
+
+export default bookingRouter;
 
 /** 
 bookingRouter.get("/today", async (req: Request, res: Response) => {
@@ -278,9 +288,9 @@ bookingRouter.post("/monthly", async (req: Request, res: Response) => {
 //All Daily Bookings
 /** 
 bookingRouter.get("/", async (req: Request, res: Response) => {
-  try {
+    try {
     const bookings = await Booking.find({ booking_scope: "daily" }).sort({
-      date: 1,
+        date: 1,
     });
 
         return res.status(200).json({
@@ -333,5 +343,3 @@ bookingRouter.get("/monthly", async (req: Request, res: Response) => {
     }
 });
 */
-
-export default bookingRouter;

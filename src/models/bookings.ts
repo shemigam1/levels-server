@@ -8,22 +8,22 @@ const BookingSchema: Schema = new Schema(
     date: { type: String, required: true, trim: true },
     //type_of_booking: { type: String, required: true, trim: true }, // Only for day bookings
     // WEEKLY booking (YYYY-WW)  ← NEW
-    week: { type: String, trim: true },
-    month: { type: String, trim: true },     // Only for month bookings
-    booking_scope: {                          // NEW
-      type: String,
-      required: true,
-      enum: ["day", "month", "weekly"],
-      //default: "daily",
-      index: true,
-    },
+    // week: { type: String, trim: true },
+    // month: { type: String, trim: true },     // Only for month bookings
+    // booking_scope: {                          // NEW
+    //   type: String,
+    //   required: true,
+    //   enum: ["day", "month", "weekly"],
+    //   //default: "daily",
+    //   index: true,
+    // },
     // Subscription chosen
-    plan: {
-      type: String,
-      required: true,
-      enum: ["daily", "weekly", "monthly"],   // ← NEW
-    },
-    slots: { type: Number, default: 1 }       // NEW
+    // plan: {
+    //   type: String,
+    //   required: true,
+    //   enum: ["daily", "weekly", "monthly"],   // ← NEW
+    // },
+    // slots: { type: Number, default: 1 }       // NEW
   },
   {
     timestamps: true,
