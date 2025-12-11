@@ -1,3 +1,4 @@
+/** 
 export function getPlanDetails(plan: string) {
   switch (plan) {
     case "daily":
@@ -10,3 +11,5 @@ export function getPlanDetails(plan: string) {
       throw new Error("Invalid plan");
   }
 }
+  not needed now
+//*/ 

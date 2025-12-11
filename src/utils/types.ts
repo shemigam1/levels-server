@@ -33,10 +33,10 @@ export interface IBooking {
   name: string;
   email: string;
   date?: string;
-  month?: string;
-  booking_type: string;
-  booking_scope?: "daily" | "monthly";
-  slots?: number;
   type_of_booking: string;
+  // booking_type: string;
+  // month?: string;
+  // booking_scope?: "daily" | "monthly";
+  // slots?: number;
   // is_active: boolean;
 }
