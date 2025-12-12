@@ -34,9 +34,10 @@ export interface IBooking {
   email: string;
   date?: string;
   type_of_booking: string;
-  // booking_type: string;
-  // month?: string;
-  // booking_scope?: "daily" | "monthly";
-  // slots?: number;
-  // is_active: boolean;
+  activated: boolean;
+}
+
+export interface IPlan {
+  email: string;
+  sessions: number;
 }
