@@ -14,14 +14,20 @@ function calculateAmountInKobo(nairaAmount: number): number {
 
 paymentRouter.post("/init", async (req, res) => {
   try {
-    const { email, amount } = req.body;
+    const { email, amount, plan } = req.body;
     // console.log(req.body);
+    let days = 1;
+    if (plan === "weekly") {
+      days = 7;
+    } else if (plan === "monthly") {
+      days = 30;
+    }
 
-    const amountInKobo = calculateAmountInKobo(1000);
+    const amountInKobo = calculateAmountInKobo(3000 * days);
     if (calculateAmountInKobo(amount) != amountInKobo) {
       return res
         .status(400)
-        .json({ error: "Invalid amount. Amount must be 1000 NGN." });
+        .json({ error: `Invalid amount. Amount must be ${3000 * days} NGN.` });
     }
     const options = {
       headers: {
@@ -39,7 +45,7 @@ paymentRouter.post("/init", async (req, res) => {
       headers: options.headers,
     });
     const data = response.data;
-    console.log(data);
+    // console.log(data);
 
     return res.status(200).json(data);
   } catch (error) {
